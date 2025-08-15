@@ -12,17 +12,14 @@
                 arrangement.Visualise();
                 Console.WriteLine();
 
-                //var heightOfCell = arrangement[0, 0];
-                //arrangement.SetHeightAt(0,0, 5);
-                //arrangement.SetHeightAt(1, 0, 5);
-                //bool isSafe = arrangement.IsSafe();
-                //var changed = arrangement.GetTotalAddedBlocks();
                 CreateSafeArrangement(arrangement);
 
                 Console.WriteLine("NEW");
                 arrangement.Visualise();
                 Console.WriteLine();
-                Console.WriteLine($"SAFE? => {arrangement.IsSafe()}");
+                var safeMessage = arrangement.IsSafe() ? "SAFE" : "NOT SAFE";
+
+                Console.WriteLine($"This arrangement is {safeMessage}");
                 Console.WriteLine($"Blocks Added => {arrangement.GetTotalAddedBlocks()}");
                 Console.WriteLine();
             }
@@ -35,16 +32,11 @@
         {
             while(!arrangement.IsSafe())
             {
-                for (int row = 0; row < arrangement.TotalColumns; row++)
+                for (int row = 0; row < arrangement.TotalRows; row++)
                 {
-                    for(int col = 0; col < arrangement.TotalRows; col++)
+                    for(int col = 0; col < arrangement.TotalColumns; col++)
                     {
-                        Coordinates? up = GetUpAdjacent(row, col);
-                        Coordinates? down = GetDownAdjacent(arrangement, row, col);
-                        Coordinates? left = GetLeftAdjacent(row, col);
-                        Coordinates? right = GetRightAdjacent(arrangement, row, col);
-
-                        Coordinates?[] adjacentCells = [up, down, left, right];
+                        Coordinates?[] adjacentCells = GetAdjacentCells(row, col, arrangement);
 
                         var curr = arrangement[row, col];
                         var balance = curr - 1;
@@ -62,24 +54,14 @@
             return arrangement;
         }
 
-        private static Coordinates? GetRightAdjacent(RabbitHouseArrangement arrangement, int row, int col)
+        private static Coordinates?[] GetAdjacentCells(int row, int col, RabbitHouseArrangement arrangement)
         {
-            return col + 1 < arrangement.TotalRows ? new Coordinates(row, col + 1) : null;
-        }
+            Coordinates? up = row - 1 >= 0 ? new Coordinates(row - 1, col) : null;
+            Coordinates? down = row + 1 < arrangement.TotalRows ? new Coordinates(row + 1, col) : null;
+            Coordinates? left = col - 1 >= 0 ? new Coordinates(row, col - 1) : null;
+            Coordinates? right = col + 1 < arrangement.TotalColumns ? new Coordinates(row, col + 1) : null;
 
-        private static Coordinates? GetLeftAdjacent(int row, int col)
-        {
-            return col - 1 >= 0 ? new Coordinates(row, col - 1) : null;
-        }
-
-        private static Coordinates? GetDownAdjacent(RabbitHouseArrangement arrangement, int row, int col)
-        {
-            return row + 1 < arrangement.TotalColumns ? new Coordinates(row + 1, col) : null;
-        }
-
-        private static Coordinates? GetUpAdjacent(int row, int col)
-        {
-            return row - 1 >= 0 ? new Coordinates(row - 1, col) : null;
+            return [up, down, left, right];
         }
     }
 }
