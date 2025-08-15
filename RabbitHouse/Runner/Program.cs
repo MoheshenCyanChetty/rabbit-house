@@ -1,6 +1,6 @@
 ﻿namespace Runner
 {
-    internal class Program
+    internal partial class Program
     {
         static void Main(string[] args)
         {
@@ -35,63 +35,51 @@
         {
             while(!arrangement.IsSafe())
             {
-                for (int i = 0; i < arrangement.TotalColumns; i++)
+                for (int row = 0; row < arrangement.TotalColumns; row++)
                 {
-                    for(int j = 0; j < arrangement.TotalRows; j++)
+                    for(int col = 0; col < arrangement.TotalRows; col++)
                     {
-                        Coordinates? up = null;
-                        Coordinates? down = null;
-                        Coordinates? left = null;
-                        Coordinates? right = null;
+                        Coordinates? up = GetUpAdjacent(row, col);
+                        Coordinates? down = GetDownAdjacent(arrangement, row, col);
+                        Coordinates? left = GetLeftAdjacent(row, col);
+                        Coordinates? right = GetRightAdjacent(arrangement, row, col);
 
-                        if (i - 1 >= 0)
-                        {
-                            up = new Coordinates(i - 1, j);
-                        }
+                        Coordinates?[] adjacentCells = [up, down, left, right];
 
-                        if (i + 1 < arrangement.TotalColumns - 1)
-                        {
-                            down = new Coordinates(i + 1, j);
-                        }
-
-                        if (j - 1 >= 0)
-                        {
-                            left = new Coordinates(i, j - 1);
-                        }
-
-                        if (j + 1 < arrangement.TotalRows - 1)
-                        {
-                            right = new Coordinates(i, j + 1);
-                        }
-
-                        Coordinates?[] adjacents = { up, down, left, right };
-
-                        var curr = arrangement[i, j];
+                        var curr = arrangement[row, col];
                         var balance = curr - 1;
-                        foreach(var cell in adjacents)
+                        foreach (var cell in adjacentCells)
                         {
                             if (cell.HasValue && arrangement.GetHeightAt(cell.Value.x, cell.Value.y) < curr)
                             {
                                 arrangement.SetHeightAt(cell.Value.x, cell.Value.y, balance);
-                            }  
+                            }
                         }
                     }
                 }
-        }
+            }
 
             return arrangement;
         }
 
-        public struct Coordinates
+        private static Coordinates? GetRightAdjacent(RabbitHouseArrangement arrangement, int row, int col)
         {
-            public int x;
-            public int y;
+            return col + 1 < arrangement.TotalRows ? new Coordinates(row, col + 1) : null;
+        }
 
-            public Coordinates(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
+        private static Coordinates? GetLeftAdjacent(int row, int col)
+        {
+            return col - 1 >= 0 ? new Coordinates(row, col - 1) : null;
+        }
+
+        private static Coordinates? GetDownAdjacent(RabbitHouseArrangement arrangement, int row, int col)
+        {
+            return row + 1 < arrangement.TotalColumns ? new Coordinates(row + 1, col) : null;
+        }
+
+        private static Coordinates? GetUpAdjacent(int row, int col)
+        {
+            return row - 1 >= 0 ? new Coordinates(row - 1, col) : null;
         }
     }
 }
