@@ -1,31 +1,42 @@
-﻿namespace Runner
+﻿using System.Diagnostics;
+
+namespace Runner
 {
     internal partial class Program
     {
         static void Main(string[] args)
         {
-            var arrangements = new RabbitHouseParser().Parse(File.ReadAllLines("input.txt"));
+            //var arrangements = new RabbitHouseParser().Parse(File.ReadAllLines("input.txt"));
+            var arrangements = new RabbitHouseParser().Parse(File.ReadAllLines("full-suite.txt"));
 
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var index = 1;
             foreach (var arrangement in arrangements)
             {
-                Console.WriteLine("OLD");
-                arrangement.Visualise();
-                Console.WriteLine();
+                #region Visualisation For Input.txt
+                //Console.WriteLine("OLD");
+                //arrangement.Visualise();
+                //Console.WriteLine();
+
+                //CreateSafeArrangement(arrangement);
+
+                //Console.WriteLine("NEW");
+                //arrangement.Visualise();
+                //Console.WriteLine();
+                //var safeMessage = arrangement.IsSafe() ? "SAFE" : "NOT SAFE";
+
+                //Console.WriteLine($"This arrangement is {safeMessage}");
+                //Console.WriteLine($"Blocks Added => {arrangement.GetTotalAddedBlocks()}");
+                //Console.WriteLine();
+                #endregion
 
                 CreateSafeArrangement(arrangement);
-
-                Console.WriteLine("NEW");
-                arrangement.Visualise();
-                Console.WriteLine();
-                var safeMessage = arrangement.IsSafe() ? "SAFE" : "NOT SAFE";
-
-                Console.WriteLine($"This arrangement is {safeMessage}");
-                Console.WriteLine($"Blocks Added => {arrangement.GetTotalAddedBlocks()}");
-                Console.WriteLine();
+                Console.WriteLine($"Case #{index++}: {arrangement.GetTotalAddedBlocks()}");
             }
 
-
-            Console.WriteLine("Hello, World!");
+            stopwatch.Stop();
+            Console.WriteLine($"Time taken: {stopwatch.ElapsedMilliseconds}ms");
         }
 
         public static RabbitHouseArrangement CreateSafeArrangement(RabbitHouseArrangement arrangement)
